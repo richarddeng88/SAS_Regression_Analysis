@@ -204,6 +204,7 @@ run;
 
 
 
+* Bias in Model Selection;
 Data BaseJr; 					/* Creates SAS dataset named BaseJr */
 Input Won_2009 RS_2009 Won_2010;  /* Inputs a subset, n=8, of the Baseball Data */
 Datalines; 					
@@ -274,3 +275,48 @@ run;
 Proc print data=NewJr;
 run;
 
+
+
+*########## Produces Diagnostic Plots with Labels on Unusual Points #######;
+Data BaseballWins;
+Input Team $10. Won_09	W1_09	L1_09	RS_09	RA_09	Won_10;
+Datalines;
+ Boston		95	22	17	872	736	89
+ Colorado	92	23	20	804	715	83
+ LA_Ang		97	27	18	883	761	81
+ LA_Dod		95	28	22	780	611	80
+ Minn		87	24	20	817	765	94
+ NY_Yan		103	22	16	915	753	95
+ Phila		93	24	21	820	709	97
+ StLouis	91	24	21	730	640	86
+ Arizona	70	20	27	720	782	65
+ Atlanta	86	27	25	735	641	91
+ Balt		64	17	22	741	876	66
+ Chi_Cub	83	16	22	707	672	75
+ Chi_WS		79	19	27	724	732	88
+ Cinc		78	19	20	673	723	91
+ Cleve		65	19	21	773	865	69
+ Detroit	86	28	22	743	745	81
+ Florida	87	30	20	772	766	80
+ Houston	74	24	23	643	770	76
+ KanC		65	16	25	686	842	67
+ Milw		80	20	23	785	818	77
+ NY_Met		70	19	24	671	757	79
+ Oakland	75	15	23	759	761	80
+ Pittsb		62	12	22	636	768	57
+ SanD		75	23	18	638	769	90
+ SanF		88	21	22	657	611	92
+ Seattle	85	35	20	640	692	61
+ Tampa		84	20	25	803	754	96
+ Texas		87	19	18	784	740	90
+ Toronto	75	21	28	798	771	85
+ Wash		59	22	24	710	874	69
+;
+run;
+proc print;
+run;
+
+proc reg plots(label)=(CooksD RStudentByLeverage);
+id Team;
+model Won_10 = Won_09 W1_09 L1_09 RS_09 RA_09; 	
+run;
