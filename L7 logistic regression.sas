@@ -53,3 +53,47 @@ WI	284	265	5.5	14917.74	17224.46	5.75	1666.99	953581	1
 WY	216	405	8.5	13941.85	16001.56	7.07	1136.08	81495	0
 ;
 
+Proc sgplot;
+	title 'Figure 1. Medicare vs. Beds';
+	scatter x=Beds y=Medicare;
+	xaxis Label="Hospital Beds Per 100,000";
+	yaxis Label="Medicare Recipients Per 100,000";
+	run;
+
+Proc sgplot;
+	title 'Figure 2. Vote08 vs. Medicare';
+	scatter x=Beds y=Vote;
+	xaxis Label="Hospital Beds Per 100,000";
+	yaxis Label="Election Outcome 1=Obama 0=McCain";
+	run;
+
+Proc Logistic descending plots=all;		/*"descending puts Obama=1*/
+Model Vote = Beds ;
+run;
+
+Proc Logistic descending plots=all;		/* This is a two-regressor model */
+Model Vote = Beds Medicare ;
+run;
+
+Proc Logistic; 				/* This is the forward selection method */
+Model Vote = Phys Beds MedChg Medicare SocSec SocChg SupSec SocEnr / 
+					selection = forward; 
+run;
+
+
+
+
+Data Baseball;
+Input Player $ Hits At_bats Height Weight;  /*note the $ sign after Player because 
+that variable is non-numeric */
+Datalines;
+Joe	208	612	70	187
+Fred	189	533	72	211
+Hideki	214	634	71	189
+;
+title 'Logistic Regression of Batting Average on Height & Weight';
+title2 'Using Event/Trial Syntax';
+
+Proc Logistic data=Baseball plots=all;
+	model Hits/At_bats = Height Weight;		/* note the x/n notation */
+run;
